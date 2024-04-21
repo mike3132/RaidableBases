@@ -43,7 +43,7 @@ public class RaidManager {
                 raidableBases.getParticleCubeHandler().addCube(player, pos1, pos2);
                 schematicLoader.loadSpecificSchematic(player, string);
 
-                //TODO: Make messages config for this and testing github
+                //TODO: Make messages config for this
                 player.sendMessage("Schematic loaded placeholder");
             }
         }.runTaskLater(RaidableBases.getInstance(), 200L);
