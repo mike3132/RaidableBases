@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RaidableBases:jar">
+    <output-path>$PROJECT_DIR$/../../../Build Tools/plugins</output-path>
+    <root id="archive" name="RaidableBases.jar">
+      <element id="module-output" name="RaidableBases" />
+    </root>
+  </artifact>
+</component>
