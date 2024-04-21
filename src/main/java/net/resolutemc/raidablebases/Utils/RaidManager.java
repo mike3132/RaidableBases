@@ -1,9 +1,12 @@
 package net.resolutemc.raidablebases.Utils;
 
+import net.resolutemc.raidablebases.PostRaid.PostRaidBossBar;
+import net.resolutemc.raidablebases.PostRaid.PostRaidTitle;
 import net.resolutemc.raidablebases.PreRaid.PreRaidBossBar;
 import net.resolutemc.raidablebases.PreRaid.PreRaidTitle;
 import net.resolutemc.raidablebases.RaidableBases;
 import net.resolutemc.raidablebases.Schematics.SchematicLoader;
+import net.resolutemc.raidablebases.Schematics.SchematicRemover;
 import net.resolutemc.raidablebases.Schematics.SchematicSaver;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,13 +19,14 @@ public class RaidManager {
     private final SchematicSaver schematicSaver = new SchematicSaver();
     private final PlayerLocationUtils locationUtils = new PlayerLocationUtils();
     private final PreRaidTitle preRaidTitle = new PreRaidTitle();
+    private final PostRaidTitle postRaidTitle = new PostRaidTitle();
 
     public RaidManager(RaidableBases raidableBases) {
         this.raidableBases = raidableBases;
     }
 
 
-    // Logic for starting a specific raid
+    // Starts a specific raid based on the command arg
     public void startSpecificRaid(Player player, String string) {
         PreRaidBossBar preRaidBossBar = new PreRaidBossBar();
         Location pos1 = locationUtils.pos1(player);
@@ -42,6 +46,7 @@ public class RaidManager {
                 raidableBases.getPreRaidPlayers().remove(player.getUniqueId());
                 raidableBases.getParticleCubeHandler().addCube(player, pos1, pos2);
                 schematicLoader.loadSpecificSchematic(player, string);
+                raidableBases.getRaidingPlayers().put(player.getUniqueId(), player.getLocation());
 
                 //TODO: Make messages config for this
                 player.sendMessage("Schematic loaded placeholder");
@@ -50,14 +55,15 @@ public class RaidManager {
 
     }
 
-    // Logic for starting a random raid
+    // Starts a random raid
     public void starRandomRaid(Player player, String string) {
+        PreRaidBossBar preRaidBossBar = new PreRaidBossBar();
         Location pos1 = locationUtils.pos1(player);
         Location pos2 = locationUtils.pos2(player);
 
         this.raidableBases.getPreRaidPlayers().add(player.getUniqueId());
         raidableBases.getPreRaidPlayers().add(player.getUniqueId());
-        //preRaidBossBar.addBar(player);
+        preRaidBossBar.addBar(player);
         preRaidTitle.sendTitle(player);
         schematicSaver.blockCache(player);
 
@@ -70,6 +76,7 @@ public class RaidManager {
                 raidableBases.getPreRaidPlayers().remove(player.getUniqueId());
                 raidableBases.getParticleCubeHandler().addCube(player, pos1, pos2);
                 schematicLoader.loadRandomSchematic(player, string);
+                raidableBases.getRaidingPlayers().put(player.getUniqueId(), player.getLocation());
 
                 //TODO: Make messages config for this
                 player.sendMessage("Schematic loaded placeholder");
@@ -77,26 +84,38 @@ public class RaidManager {
         }.runTaskLater(RaidableBases.getInstance(), 200L);
     }
 
-    public void resetArea(Player player) {
-        player.sendMessage("Please wait 10 seconds while we reset the area");
-
+    // Resets the area around a player when a raid finishes
+    public void raidEnd(Player player) {
+        SchematicRemover schematicRemover = new SchematicRemover();
+        PostRaidBossBar postRaidBossBar = new PostRaidBossBar();
         //TODO: Teleport logic for sending player back to where they started the raid from
         // so that the area gets reset correctly
+        postRaidBossBar.addBar(player);
+        postRaidTitle.sendTitle(player);
+        raidableBases.getPostRaidPlayers().add(player.getUniqueId());
 
-        raidableBases.getParticleCubeHandler().removeCube(player);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                schematicLoader.callBlockCache(player);
+                raidableBases.getParticleCubeHandler().removeCube(player);
+                raidableBases.getPostRaidPlayers().remove(player.getUniqueId());
+                schematicRemover.removeSchematic(player);
+                //TODO: Make messages config for this
+                player.sendMessage("Schematic loaded placeholder");
+            }
+        }.runTaskLater(RaidableBases.getInstance(), 200L);
+    }
+
+    public void raidForceStop(Player player) {
+        SchematicRemover schematicRemover = new SchematicRemover();
+        if (!raidableBases.getRaidingPlayers().containsKey(player.getUniqueId())) return;
+        player.teleport(raidableBases.getRaidingPlayers().get(player.getUniqueId()));
+
         schematicLoader.callBlockCache(player);
-        //TODO: Make messages config for this
-        player.sendMessage("Schematic loaded placeholder");
-
-        //new BukkitRunnable() {
-        //    @Override
-        //    public void run() {
-        //        raidableBases.getParticleCubeHandler().removeCube(player);
-        //        schematicLoader.callBlockCache(player);
-        //        //TODO: Make messages config for this
-        //        player.sendMessage("Schematic loaded placeholder");
-        //    }
-        //}.runTaskLater(RaidableBases.getInstance(), 200L);
+        raidableBases.getParticleCubeHandler().removeCube(player);
+        schematicRemover.removeSchematic(player);
+        raidableBases.getRaidingPlayers().remove(player.getUniqueId());
     }
 
 
