@@ -9,9 +9,9 @@ public class PlayerLocationUtils {
     // Used for saving and resetting blocks around player, before and after a raid. Also used for drawing particle cube
     public Location pos1(Player player) {
         Location playerLocation = player.getLocation();
-        int x = playerLocation.getBlockX();
-        int y = playerLocation.getBlockY();
-        int z = playerLocation.getBlockZ();
+        double x = playerLocation.getX();
+        double y = playerLocation.getY();
+        double z = playerLocation.getZ();
 
         return new Location(playerLocation.getWorld(), x+4, y+8, z+4);
     }
@@ -20,9 +20,9 @@ public class PlayerLocationUtils {
     // Used for saving and resetting blocks around player, before and after a raid. Also used for drawing particle cube
     public Location pos2(Player player) {
         Location playerLocation = player.getLocation();
-        int x = playerLocation.getBlockX();
-        int y = playerLocation.getBlockY();
-        int z = playerLocation.getBlockZ();
+        double x = playerLocation.getX();
+        double y = playerLocation.getY();
+        double z = playerLocation.getZ();
 
         return new Location(playerLocation.getWorld(), x-4, y, z-4);
     }

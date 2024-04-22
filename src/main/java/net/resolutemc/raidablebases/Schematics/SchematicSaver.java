@@ -50,8 +50,6 @@ public class SchematicSaver {
         Location pos2 = playerLocationUtils.pos2(player);
 
         WorldEditHook.save(pos1, pos2, player.getLocation(), file);
-        //TODO: Make messages config for this
-        player.sendMessage("Schematic saved");
     }
 
 

@@ -84,15 +84,17 @@ public class RaidManager {
         }.runTaskLater(RaidableBases.getInstance(), 200L);
     }
 
-    // Resets the area around a player when a raid finishes
+    // Stops a raid, teleports the player to where the raid started and resets the area around a player
     public void raidEnd(Player player) {
         SchematicRemover schematicRemover = new SchematicRemover();
         PostRaidBossBar postRaidBossBar = new PostRaidBossBar();
         //TODO: Teleport logic for sending player back to where they started the raid from
         // so that the area gets reset correctly
+        player.teleport(raidableBases.getRaidingPlayers().get(player.getUniqueId()));
+        raidableBases.getRaidingPlayers().remove(player.getUniqueId());
+        raidableBases.getPostRaidPlayers().add(player.getUniqueId());
         postRaidBossBar.addBar(player);
         postRaidTitle.sendTitle(player);
-        raidableBases.getPostRaidPlayers().add(player.getUniqueId());
 
         new BukkitRunnable() {
             @Override

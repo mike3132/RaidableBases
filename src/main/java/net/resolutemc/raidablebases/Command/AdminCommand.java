@@ -2,12 +2,10 @@ package net.resolutemc.raidablebases.Command;
 
 import net.resolutemc.raidablebases.Chat.ConsoleMessages;
 import net.resolutemc.raidablebases.Items.WandItem;
-import net.resolutemc.raidablebases.PreRaid.PreRaidBossBar;
 import net.resolutemc.raidablebases.RaidableBases;
-import net.resolutemc.raidablebases.Schematics.SchematicRemover;
+import net.resolutemc.raidablebases.Schematics.SchematicList;
 import net.resolutemc.raidablebases.Schematics.SchematicSaver;
 import net.resolutemc.raidablebases.Utils.*;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,6 +17,8 @@ public class AdminCommand implements CommandExecutor {
     private final RaidableBases raidableBases;
     private final RaidManager raidManager = new RaidManager(RaidableBases.getInstance());
     private final SchematicSaver schematicSaver = new SchematicSaver();
+    private final SchematicList schematicList = new SchematicList();
+    private final RegionViewer regionViewer = new RegionViewer();
 
     // TODO: Remove this after debugging as they are only here so I can manually call them
     private final PlayerLocationUtils playerLocationUtils = new PlayerLocationUtils();
@@ -53,14 +53,30 @@ public class AdminCommand implements CommandExecutor {
                 player.getInventory().addItem(wand);
                 player.sendMessage("Given wand placeholder");
                 break;
-            case "SAVE":
-                if (args.length != 2) {
-                    player.sendMessage("Please select a name placeholder");
-                    return true;
+            case "SCHEMATIC":
+                if (args.length > 1) {
+                    if (args[1].equalsIgnoreCase("List")) {
+                        schematicList.listSchematics(player);
+                        return false;
+                    }
+                    if (args[1].equalsIgnoreCase("Save")) {
+                        if (args.length > 2) {
+                            if (region == null) {
+                                player.sendMessage("Please select both pos1 and pos2 first placeholder");
+                                return false;
+                            }
+                            schematicSaver.schematicSave(player, args[2]);
+                            return false;
+                        }
+                        player.sendMessage("Please select a name for your schematic placeholder");
+                        return false;
+                    }
+                    player.sendMessage("That arg is not found, Pick save or list placeholder");
+                    return false;
                 }
-                schematicSaver.schematicSave(player, args[1]);
+                player.sendMessage("Please pick save or list");
                 break;
-            case "LOAD":
+            case "START":
                 if (args.length != 2) {
                     player.sendMessage("Please select a name or random placeholder");
                     return true;
@@ -71,22 +87,46 @@ public class AdminCommand implements CommandExecutor {
                 }
                 raidManager.startSpecificRaid(player, args[1]);
                 break;
+            case "STOP":
+                if (args.length != 2) {
+                    player.sendMessage("Please select a player's raid to stop");
+                    return false;
+                }
+                raidManager.raidEnd(player);
+                break;
             case "DESELECT":
                 if (region.getPos1() != null && region.getPos2() != null) {
                     region.setPos1(null);
                     region.setPos2(null);
                     player.sendMessage("Selections cleared placeholder");
+                    raidableBases.getRegionCache().remove(player.getUniqueId());
                     return false;
                 }
                 player.sendMessage("There is no regions to clear");
                 break;
-            case "REGIONS":
-                if (region.getPos1() != null || region.getPos2() != null) {
-                    player.sendMessage("Region 1 is set at " + region.getPos1());
-                    player.sendMessage("Region 2 is set at " + region.getPos2());
+            case "POSISITONS":
+                if (region == null || region.getPos1() == null || region.getPos2() == null) {
+                    player.sendMessage("You only have 1 or no regions set");
                     return false;
                 }
-                player.sendMessage("You only have 1 or no regions set");
+                // Create a system to show where positions are set
+                player.sendMessage("Region 1 is set at " + region.getPos1());
+                player.sendMessage("Region 2 is set at " + region.getPos2());
+                break;
+            case "REGION":
+                if (args.length != 2) {
+                    player.sendMessage("Please select either show or remove");
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("Show")) {
+                    regionViewer.showRegion(player);
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("Remove")) {
+                    regionViewer.removeRegion(player);
+                    return false;
+                }
+                player.sendMessage("That is not show or remove");
                 break;
             //TODO: Remove all this debug code
             case "RESET":
@@ -95,27 +135,6 @@ public class AdminCommand implements CommandExecutor {
                     return true;
                 }
                 raidManager.raidEnd(player);
-                break;
-            case "CREATEPARTICLE":
-                this.raidableBases.getParticleCubeHandler().addCube(player, playerLocationUtils.pos1(player), playerLocationUtils.pos2(player));
-                player.sendMessage("Spawning particle");
-                break;
-            case "CLEARPARTICLE":
-                this.raidableBases.getParticleCubeHandler().removeCubes();
-                player.sendMessage("Clearing all active particles");
-                break;
-            case "FORCESTOP":
-                player.sendMessage("Force stopping raids");
-                raidManager.raidForceStop(player);
-                break;
-            case "MAPCHECK":
-                player.sendMessage(raidableBases.getRaidingPlayers().keySet().toString());
-                player.sendMessage(raidableBases.getRaidingPlayers().values().toString());
-                break;
-            case "REMOVESCHEM":
-                player.sendMessage("Removing schematic");
-                SchematicRemover schematicRemover = new SchematicRemover();
-                schematicRemover.removeSchematic(player);
                 break;
             default:
                 player.sendMessage("Please select pos1, pos2, save, or load placeholder");

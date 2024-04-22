@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class PostRaidBossBar {
 
+    //TODO: Make these config variables
     private final String barTitle = ColorTranslate.chatColor("&bRemoving the raid in &d");
     private final String barEnding = ColorTranslate.chatColor(" &bseconds");
     private final String barColor = "GREEN";
