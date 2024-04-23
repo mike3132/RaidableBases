@@ -1,4 +1,4 @@
-package net.resolutemc.raidablebases.PostRaid;
+package net.resolutemc.raidablebases.RaidManager;
 
 import net.resolutemc.raidablebases.Chat.ColorTranslate;
 import net.resolutemc.raidablebases.RaidableBases;

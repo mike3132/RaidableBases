@@ -4,11 +4,9 @@ import net.resolutemc.raidablebases.Chat.ColorTranslate;
 import net.resolutemc.raidablebases.Command.AdminCommand;
 import net.resolutemc.raidablebases.Command.ConsoleCommand;
 import net.resolutemc.raidablebases.Config.ConfigCreator;
-import net.resolutemc.raidablebases.Event.PostRaidEvent;
-import net.resolutemc.raidablebases.Event.PreRaidEvent;
-import net.resolutemc.raidablebases.Event.WandEvent;
+import net.resolutemc.raidablebases.Event.*;
 import net.resolutemc.raidablebases.Utils.ParticleCubeHandler;
-import net.resolutemc.raidablebases.Utils.RaidManager;
+import net.resolutemc.raidablebases.RaidManager.RaidManager;
 import net.resolutemc.raidablebases.Utils.RegionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,6 +19,7 @@ public final class RaidableBases extends JavaPlugin {
 
     private static RaidableBases INSTANCE;
     private ParticleCubeHandler particleCubeHandler;
+    private final List<UUID> setupModePlayers = new ArrayList<>();
     private final List<UUID> preRaidPlayers = new ArrayList<>();
     private final List<UUID> postRaidPlayers = new ArrayList<>();
     private final Map<UUID, RegionUtils> regionCache = new HashMap<>();
@@ -39,6 +38,9 @@ public final class RaidableBases extends JavaPlugin {
     public Map<UUID, RegionUtils> getRegionCache() {
         return regionCache;
     }
+    public List<UUID> getSetupModePlayers() {
+        return setupModePlayers;
+    }
 
     @Override
     public void onEnable() {
@@ -51,7 +53,8 @@ public final class RaidableBases extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new WandEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new PreRaidEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new PostRaidEvent(this), this);
-
+        Bukkit.getPluginManager().registerEvents(new TntEvent(this), this);
+        Bukkit.getPluginManager().registerEvents(new SetupEvent(this), this);
 
         // Command registers
         registerAdminCommand();

@@ -1,13 +1,13 @@
-package net.resolutemc.raidablebases.PostRaid;
+package net.resolutemc.raidablebases.RaidManager;
 
 import net.resolutemc.raidablebases.Chat.ColorTranslate;
 import org.bukkit.entity.Player;
 
-public class PostRaidTitle {
+public class PreRaidTitle {
 
     //TODO: Make Title and subTitle configurable
     private final String title = ColorTranslate.chatColor("&5Raidable &dBases");
-    private final String subTitle = ColorTranslate.chatColor("&bPlease wait while we remove the raid and reset the area");
+    private final String subTitle = ColorTranslate.chatColor("&bPlease wait while we setup the raid");
     int fadeIn = 20;
     int stay = 200;
     int fadeOut = 20;
@@ -15,4 +15,6 @@ public class PostRaidTitle {
     public void sendTitle(Player player) {
         player.sendTitle(title, subTitle, fadeIn, stay, fadeOut);
     }
+
+
 }

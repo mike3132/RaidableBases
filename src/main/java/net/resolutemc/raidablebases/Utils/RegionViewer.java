@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 public class RegionViewer {
 
     private final PlayerLocationUtils playerLocationUtils = new PlayerLocationUtils();
-    NamespacedKey key = new NamespacedKey(RaidableBases.getInstance(), "Bar-Key");
+    private final NamespacedKey key = new NamespacedKey(RaidableBases.getInstance(), "Bar-Key");
 
     public void removeRegion(Player player) {
         player.sendMessage("Removing region preview");
@@ -31,7 +31,6 @@ public class RegionViewer {
         player.sendMessage("Please note that any blocks shown here are not real and only show for you");
         player.sendMessage("If you interact with them in anyway they will disappear");
         player.sendMessage("To disable use /rb region remove");
-
 
         beaconMaker(player);
         RaidableBases.getInstance().getParticleCubeHandler().addCube(player, pos1, pos2);

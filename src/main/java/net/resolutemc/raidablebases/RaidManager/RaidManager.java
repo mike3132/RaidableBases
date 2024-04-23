@@ -1,13 +1,10 @@
-package net.resolutemc.raidablebases.Utils;
+package net.resolutemc.raidablebases.RaidManager;
 
-import net.resolutemc.raidablebases.PostRaid.PostRaidBossBar;
-import net.resolutemc.raidablebases.PostRaid.PostRaidTitle;
-import net.resolutemc.raidablebases.PreRaid.PreRaidBossBar;
-import net.resolutemc.raidablebases.PreRaid.PreRaidTitle;
 import net.resolutemc.raidablebases.RaidableBases;
 import net.resolutemc.raidablebases.Schematics.SchematicLoader;
 import net.resolutemc.raidablebases.Schematics.SchematicRemover;
 import net.resolutemc.raidablebases.Schematics.SchematicSaver;
+import net.resolutemc.raidablebases.Utils.PlayerLocationUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -52,7 +49,6 @@ public class RaidManager {
                 player.sendMessage("Schematic loaded placeholder");
             }
         }.runTaskLater(RaidableBases.getInstance(), 200L);
-
     }
 
     // Starts a random raid
@@ -88,8 +84,6 @@ public class RaidManager {
     public void raidEnd(Player player) {
         SchematicRemover schematicRemover = new SchematicRemover();
         PostRaidBossBar postRaidBossBar = new PostRaidBossBar();
-        //TODO: Teleport logic for sending player back to where they started the raid from
-        // so that the area gets reset correctly
         player.teleport(raidableBases.getRaidingPlayers().get(player.getUniqueId()));
         raidableBases.getRaidingPlayers().remove(player.getUniqueId());
         raidableBases.getPostRaidPlayers().add(player.getUniqueId());
