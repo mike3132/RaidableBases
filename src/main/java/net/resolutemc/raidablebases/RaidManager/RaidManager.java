@@ -1,5 +1,6 @@
 package net.resolutemc.raidablebases.RaidManager;
 
+import net.resolutemc.raidablebases.Hook.MythicMobsHook;
 import net.resolutemc.raidablebases.RaidableBases;
 import net.resolutemc.raidablebases.Schematics.SchematicLoader;
 import net.resolutemc.raidablebases.Schematics.SchematicRemover;
@@ -22,7 +23,6 @@ public class RaidManager {
         this.raidableBases = raidableBases;
     }
 
-
     // Starts a specific raid based on the command arg
     public void startSpecificRaid(Player player, String string) {
         PreRaidBossBar preRaidBossBar = new PreRaidBossBar();
@@ -44,6 +44,7 @@ public class RaidManager {
                 raidableBases.getParticleCubeHandler().addCube(player, pos1, pos2);
                 schematicLoader.loadSpecificSchematic(player, string);
                 raidableBases.getRaidingPlayers().put(player.getUniqueId(), player.getLocation());
+                spawnMob(player);
 
                 //TODO: Make messages config for this
                 player.sendMessage("Schematic loaded placeholder");
@@ -89,6 +90,7 @@ public class RaidManager {
         raidableBases.getPostRaidPlayers().add(player.getUniqueId());
         postRaidBossBar.addBar(player);
         postRaidTitle.sendTitle(player);
+        removeMob(player);
 
         new BukkitRunnable() {
             @Override
@@ -97,6 +99,7 @@ public class RaidManager {
                 raidableBases.getParticleCubeHandler().removeCube(player);
                 raidableBases.getPostRaidPlayers().remove(player.getUniqueId());
                 schematicRemover.removeSchematic(player);
+
                 //TODO: Make messages config for this
                 player.sendMessage("Schematic loaded placeholder");
             }
@@ -112,6 +115,17 @@ public class RaidManager {
         raidableBases.getParticleCubeHandler().removeCube(player);
         schematicRemover.removeSchematic(player);
         raidableBases.getRaidingPlayers().remove(player.getUniqueId());
+    }
+
+    // TODO: Fix this
+    private void spawnMob(Player player) {
+        MythicMobsHook mobsHook = new MythicMobsHook();
+        mobsHook.spawnMob(player);
+    }
+
+    private void removeMob(Player player) {
+        MythicMobsHook mobsHook = new MythicMobsHook();
+        mobsHook.removeMob(player);
     }
 
 

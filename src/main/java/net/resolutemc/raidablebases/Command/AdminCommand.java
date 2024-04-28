@@ -1,6 +1,7 @@
 package net.resolutemc.raidablebases.Command;
 
 import net.resolutemc.raidablebases.Chat.ConsoleMessages;
+import net.resolutemc.raidablebases.Hook.MythicMobsHook;
 import net.resolutemc.raidablebases.Items.WandItem;
 import net.resolutemc.raidablebases.RaidManager.RaidManager;
 import net.resolutemc.raidablebases.RaidableBases;
@@ -60,7 +61,6 @@ public class AdminCommand implements CommandExecutor {
                     raidableBases.getSetupModePlayers().add(player.getUniqueId());
                     player.sendMessage("Given wand placeholder");
                     player.sendMessage("Setup enabled");
-                    player.sendMessage("Press your 'swap item with offhand' keybind to copy your inventory to the chest you are looking at");
                     return false;
                 }
                 if (args[1].equalsIgnoreCase("Disable")) {
@@ -142,7 +142,6 @@ public class AdminCommand implements CommandExecutor {
                     player.sendMessage("You only have 1 or no regions set");
                     return false;
                 }
-                // Create a system to show where positions are set
                 player.sendMessage("Region 1 is set at " + region.getPos1());
                 player.sendMessage("Region 2 is set at " + region.getPos2());
                 break;
