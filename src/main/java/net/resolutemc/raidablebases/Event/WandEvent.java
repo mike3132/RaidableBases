@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataType;
 
 public class WandEvent implements Listener {
@@ -31,13 +32,16 @@ public class WandEvent implements Listener {
 
         if (!player.getInventory().getItemInMainHand().getType().equals(Material.GOLDEN_AXE)) return;
         if (!player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.STRING)) return;
+        if (pie.getHand() != EquipmentSlot.HAND) return;
 
         if (pie.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            pie.setCancelled(true);
             region.setPos1(block.getLocation());
-            player.sendMessage("Pos 1 set");
+            player.sendMessage("Pos 1 set placeholder");
             return;
         }
         if (pie.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            pie.setCancelled(true);
             region.setPos2(block.getLocation());
             player.sendMessage("Pos 2 set placeholder");
         }

@@ -22,9 +22,6 @@ public class AdminCommand implements CommandExecutor {
     private final SchematicList schematicList = new SchematicList();
     private final RegionViewer regionViewer = new RegionViewer();
 
-    // TODO: Remove this after debugging as they are only here so I can manually call them
-    private final PlayerLocationUtils playerLocationUtils = new PlayerLocationUtils();
-
     public AdminCommand(RaidableBases raidableBases) {
         RaidableBases.getInstance().getCommand("RaidableBases").setExecutor(this);
         this.raidableBases = raidableBases;
@@ -159,22 +156,6 @@ public class AdminCommand implements CommandExecutor {
                     return false;
                 }
                 player.sendMessage("That is not show or remove");
-                break;
-            //TODO: Remove all this debug code
-            case "RESET":
-                if (args.length != 2) {
-                    player.sendMessage("Please select a name or random placeholder");
-                    return true;
-                }
-                raidManager.raidEnd(player);
-                break;
-            case "MAPADD":
-                raidableBases.getRaidingPlayers().put(player.getUniqueId(), player.getLocation());
-                player.sendMessage("Added to the map");
-                break;
-            case "MAPREMOVE":
-                raidableBases.getRaidingPlayers().remove(player.getUniqueId());
-                player.sendMessage("Removed from the map");
                 break;
             default:
                 player.sendMessage("Please select pos1, pos2, save, or load placeholder");

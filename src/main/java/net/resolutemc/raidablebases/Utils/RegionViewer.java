@@ -2,7 +2,11 @@ package net.resolutemc.raidablebases.Utils;
 
 import net.resolutemc.raidablebases.Chat.ColorTranslate;
 import net.resolutemc.raidablebases.RaidableBases;
-import org.bukkit.*;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.KeyedBossBar;
@@ -15,7 +19,7 @@ public class RegionViewer {
 
     public void removeRegion(Player player) {
         player.sendMessage("Removing region preview");
-        player.sendMessage("Teleport away to de render fake blocks");
+        player.sendMessage("To remove fake blocks teleport away or click them");
         RaidableBases.getInstance().getParticleCubeHandler().removeCube(player);
         removeBossBar(player);
     }
@@ -23,16 +27,19 @@ public class RegionViewer {
     public void showRegion(Player player) {
         Location pos1 = playerLocationUtils.pos1(player);
         Location pos2 = playerLocationUtils.pos2(player);
-        removeRegion(player);
+        RaidableBases.getInstance().getParticleCubeHandler().removeCube(player);
+        removeBossBar(player);
         addTitle(player);
         addBossBar(player);
+        beaconMaker(player);
+        createPos1Sign(player);
+        createPos2Sign(player);
 
         //TODO: Make messages config for this
         player.sendMessage("Please note that any blocks shown here are not real and only show for you");
         player.sendMessage("If you interact with them in anyway they will disappear");
         player.sendMessage("To disable use /rb region remove");
 
-        beaconMaker(player);
         RaidableBases.getInstance().getParticleCubeHandler().addCube(player, pos1, pos2);
     }
 
@@ -76,6 +83,31 @@ public class RegionViewer {
         KeyedBossBar bar = Bukkit.getBossBar(key);
         if (bar == null) return;
         bar.removePlayer(player);
+    }
+
+    private void createPos1Sign(Player player) {
+        Location pos1 = playerLocationUtils.pos1(player);
+        player.sendBlockChange(pos1, Material.DIAMOND_BLOCK.createBlockData());
+        player.sendBlockChange(pos1.add(0,1,0), Material.MANGROVE_SIGN.createBlockData());
+        String[] signString = new String[] {
+                ColorTranslate.chatColor("&4&l&ka&bRaidable &bBases&4&l&ka"),
+                ColorTranslate.chatColor("&2&lPosition 1"),
+                ColorTranslate.chatColor("&6Left Click With"),
+                ColorTranslate.chatColor("&d&lThe Wand V")
+        };
+        player.sendSignChange(pos1, signString);
+    }
+    private void createPos2Sign(Player player) {
+        Location pos2 = playerLocationUtils.pos2(player);
+        player.sendBlockChange(pos2, Material.EMERALD_BLOCK.createBlockData());
+        player.sendBlockChange(pos2.add(0,1,0), Material.MANGROVE_SIGN.createBlockData());
+        String[] signString = new String[] {
+                ColorTranslate.chatColor("&4&l&ka&bRaidable &bBases&4&l&ka"),
+                ColorTranslate.chatColor("&2&lPosition 2"),
+                ColorTranslate.chatColor("&6Right Click With"),
+                ColorTranslate.chatColor("&d&lThe Wand V")
+        };
+        player.sendSignChange(pos2, signString);
     }
 
 

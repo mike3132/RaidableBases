@@ -26,7 +26,7 @@ public class ParticleCubeHandler {
         for (ParticleCube cube : this.cubes.values()) {
             List<Location> cubePoints = this.getHollowCube(cube.corner1(), cube.corner2(), 0.25D);
             for (Location location : cubePoints) {
-                location.getWorld().spawnParticle(Particle.REDSTONE, location, 1, new Particle.DustOptions(Color.RED, 1));
+                location.getWorld().spawnParticle(Particle.REDSTONE, location, 1, new Particle.DustOptions(Color.BLUE, 1));
             }
         }
     }

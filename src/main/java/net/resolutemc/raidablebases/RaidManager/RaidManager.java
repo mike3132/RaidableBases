@@ -64,9 +64,6 @@ public class RaidManager {
         preRaidTitle.sendTitle(player);
         schematicSaver.blockCache(player);
 
-        //TODO: Make messages config for this
-        player.sendMessage("Saving current blocks placeholder");
-
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -74,9 +71,10 @@ public class RaidManager {
                 raidableBases.getParticleCubeHandler().addCube(player, pos1, pos2);
                 schematicLoader.loadRandomSchematic(player, string);
                 raidableBases.getRaidingPlayers().put(player.getUniqueId(), player.getLocation());
+                spawnMob(player);
 
                 //TODO: Make messages config for this
-                player.sendMessage("Schematic loaded placeholder");
+                player.sendMessage("Raid loaded placeholder");
             }
         }.runTaskLater(RaidableBases.getInstance(), 200L);
     }
@@ -101,11 +99,12 @@ public class RaidManager {
                 schematicRemover.removeSchematic(player);
 
                 //TODO: Make messages config for this
-                player.sendMessage("Schematic loaded placeholder");
+                player.sendMessage("Raid Ended placeholder");
             }
         }.runTaskLater(RaidableBases.getInstance(), 200L);
     }
 
+    // Force stops the raid INSTANTLY (This is only called onPluginDisable)
     public void raidForceStop(Player player) {
         SchematicRemover schematicRemover = new SchematicRemover();
         if (!raidableBases.getRaidingPlayers().containsKey(player.getUniqueId())) return;
@@ -115,6 +114,7 @@ public class RaidManager {
         raidableBases.getParticleCubeHandler().removeCube(player);
         schematicRemover.removeSchematic(player);
         raidableBases.getRaidingPlayers().remove(player.getUniqueId());
+        removeMob(player);
     }
 
     // TODO: Fix this

@@ -4,11 +4,9 @@ import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import net.resolutemc.raidablebases.RaidableBases;
 import net.resolutemc.raidablebases.Utils.PlayerLocationUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
 
@@ -25,15 +23,12 @@ public class MythicMobsHook {
 
     // TODO: Loop over mobs in config file for each raid and spawn them in
     public void spawnMob(Player player) {
-        new BukkitRunnable() {
-            int mobAmount = 4;
-            @Override
-            public void run() {
-                if (mobAmount == 0) this.cancel();
-                mobAmount --;
-                getMob().spawn(BukkitAdapter.adapt(playerLocationUtils.randomLocation(player)), 1);
-            }
-        }.runTaskTimer(RaidableBases.getInstance(), 0, 20L);
+        int mobAmount = 5;
+
+        while (mobAmount != 0) {
+            mobAmount --;
+            getMob().spawn(BukkitAdapter.adapt(playerLocationUtils.randomLocation(player)), 1);
+        }
     }
 
     public void removeMob(Player player) {
