@@ -54,6 +54,7 @@ public final class RaidableBases extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PreRaidEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new PostRaidEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new TntEvent(this), this);
+        Bukkit.getPluginManager().registerEvents(new RaidEvent(), this);
 
         // Command registers
         registerAdminCommand();

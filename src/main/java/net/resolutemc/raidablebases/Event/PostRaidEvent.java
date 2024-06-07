@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class PostRaidEvent implements Listener {
@@ -31,6 +33,28 @@ public class PostRaidEvent implements Listener {
             if (moveX != currentX || moveZ != currentZ) {
                 pme.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent bpe) {
+        Player player = bpe.getPlayer();
+
+        if (raidableBases.getPostRaidPlayers().contains(player.getUniqueId())) {
+            bpe.setCancelled(true);
+            // TODO: Make messages config for this
+            player.sendMessage("You cannot place blocks while the area is being refreshed");
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockBreakEvent bpe) {
+        Player player = bpe.getPlayer();
+
+        if (raidableBases.getPostRaidPlayers().contains(player.getUniqueId())) {
+            bpe.setCancelled(true);
+            // TODO: Make messages config for this
+            player.sendMessage("You cannot break blocks while the area is being refreshed");
         }
     }
 

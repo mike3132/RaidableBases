@@ -1,11 +1,13 @@
 package net.resolutemc.raidablebases.RaidManager;
 
+import net.resolutemc.raidablebases.Chat.ColorTranslate;
 import net.resolutemc.raidablebases.Hook.MythicMobsHook;
 import net.resolutemc.raidablebases.RaidableBases;
 import net.resolutemc.raidablebases.Schematics.SchematicLoader;
 import net.resolutemc.raidablebases.Schematics.SchematicRemover;
 import net.resolutemc.raidablebases.Schematics.SchematicSaver;
 import net.resolutemc.raidablebases.Utils.PlayerLocationUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,6 +24,7 @@ public class RaidManager {
     public RaidManager(RaidableBases raidableBases) {
         this.raidableBases = raidableBases;
     }
+
 
     // Starts a specific raid based on the command arg
     public void startSpecificRaid(Player player, String string) {
@@ -119,14 +122,22 @@ public class RaidManager {
 
     // TODO: Fix this
     private void spawnMob(Player player) {
-        MythicMobsHook mobsHook = new MythicMobsHook();
-        mobsHook.spawnMob(player);
+        boolean useMythicMobs = this.raidableBases.getConfig().getBoolean("MythicMobs");
+        if (useMythicMobs) {
+            MythicMobsHook mobsHook = new MythicMobsHook();
+            mobsHook.spawnMob(player);
+        } else {
+            Bukkit.broadcastMessage(ColorTranslate.chatColor("&4WARNING: &cMike you need to make a real config for this"));
+        }
     }
 
     private void removeMob(Player player) {
-        MythicMobsHook mobsHook = new MythicMobsHook();
-        mobsHook.removeMob(player);
+        boolean useMythicMobs = this.raidableBases.getConfig().getBoolean("MythicMobs");
+        if (useMythicMobs) {
+            MythicMobsHook mobsHook = new MythicMobsHook();
+            mobsHook.removeMob(player);
+        } else {
+            Bukkit.broadcastMessage(ColorTranslate.chatColor("&4WARNING: &cMike you need to make a real config for this"));
+        }
     }
-
-
 }

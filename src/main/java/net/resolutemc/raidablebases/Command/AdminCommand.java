@@ -1,7 +1,6 @@
 package net.resolutemc.raidablebases.Command;
 
 import net.resolutemc.raidablebases.Chat.ConsoleMessages;
-import net.resolutemc.raidablebases.Hook.MythicMobsHook;
 import net.resolutemc.raidablebases.Items.WandItem;
 import net.resolutemc.raidablebases.RaidManager.RaidManager;
 import net.resolutemc.raidablebases.RaidableBases;

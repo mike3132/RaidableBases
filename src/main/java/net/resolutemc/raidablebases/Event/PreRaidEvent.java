@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class PreRaidEvent implements Listener {
@@ -33,7 +35,28 @@ public class PreRaidEvent implements Listener {
                 pme.setCancelled(true);
             }
         }
+    }
 
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent bpe) {
+        Player player = bpe.getPlayer();
+
+        if (raidableBases.getPreRaidPlayers().contains(player.getUniqueId())) {
+            bpe.setCancelled(true);
+            // TODO: Make messages config for this
+            player.sendMessage("You cannot place blocks while a raid is being setup");
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockBreakEvent bpe) {
+        Player player = bpe.getPlayer();
+
+        if (raidableBases.getPreRaidPlayers().contains(player.getUniqueId())) {
+            bpe.setCancelled(true);
+            // TODO: Make messages config for this
+            player.sendMessage("You cannot break blocks while a raid is being setup");
+        }
     }
 
 
